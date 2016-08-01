@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: test-kasai
-        image: registry.yuanbaopu.com:5000/v1/kasai:latest
+        image: registry.***.com:5000/v1/kasai:latest
         ports:
         - containerPort: 8099
         resources:

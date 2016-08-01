@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: tomcat-seller
-        image: registry.yuanbaopu.com:5000/v1/redis:3.0.7
+        image: registry.***.com:5000/v1/redis:3.0.7
         ports:
         - containerPort: 8080
         resources:
