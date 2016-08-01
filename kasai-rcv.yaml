@@ -1,0 +1,49 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: test-kasai
+  labels:
+    name: test-kasai
+spec:
+  replicas: 2
+  selector:
+    name: ybp-kasai
+  template:
+    metadata:
+      labels:
+        name: ybp-kasai
+    spec:
+      containers:
+      - name: test-kasai
+        image: registry.yuanbaopu.com:5000/v1/kasai:latest
+        ports:
+        - containerPort: 8099
+        resources:
+          limits:
+            cpu: 1800m
+            memory: 2000Mi
+        volumeMounts:
+            - mountPath: /opt/logs
+              name: test-kasai-volume
+      volumes:
+          - name: test-kasai-volume
+            hostPath:
+              path: /data/logs/kasai   
+
+----------------------
+apiVersion: v1
+kind: Service
+metadata:
+  name:  test-kasai
+  labels:
+    name: test-kasai
+spec:
+  type: NodePort
+  clusterIP: 192.168.3.12
+  ports:
+  - protocol: TCP
+    port: 8099
+    targetPort: 8099
+    nodePort: 30099
+  selector:
+    name: ybp-kasai

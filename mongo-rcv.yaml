@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: mongo
+  labels:
+    name: mongo-public
+spec:
+  replicas: 2
+  selector:
+    name: mongo-master
+  template:
+    metadata:
+      labels:
+        name: mongo-master
+    spec:
+      containers:
+      - name: mongo
+        image: registry.yuanbaopu.com:5000/v1/mongo:3.0.12
+        ports:
+        - containerPort: 27017
+        resources:
+          limits:
+            cpu: 800m
+            memory: 1000Mi
+
+----------------------
+apiVersion: v1
+kind: Service
+metadata:
+  name:  mongo
+  labels:
+    name: mongo-public
+spec:
+  type: NodePort
+  clusterIP: 192.168.3.17
+  ports:
+  - protocol: TCP
+    port: 27017
+    targetPort: 27017
+    nodePort: 30017
+  selector:
+    name: mongo-master

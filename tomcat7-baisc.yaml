@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: tomcat-seller
+  labels:
+    name: seller
+spec:
+  replicas: 2
+  selector:
+    name: tomcat-master
+  template:
+    metadata:
+      labels:
+        name: tomcat-master
+    spec:
+      containers:
+      - name: tomcat-seller
+        image: registry.yuanbaopu.com:5000/v1/redis:3.0.7
+        ports:
+        - containerPort: 8080
+        resources:
+          limits:
+            cpu: 1200m
+            memory: 2000Mi
+
+----------------------
+apiVersion: v1
+kind: Service
+metadata:
+  name:  tomcat-seller
+  labels:
+    name: master
+spec:
+  type: NodePort
+  clusterIP: 192.168.3.2
+  ports:
+  - protocol: TCP
+    port: 8080
+    targetPort: 8080
+    nodePort: 30080
+  selector:
+    name: tomcat-master
