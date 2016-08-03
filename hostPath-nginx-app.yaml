@@ -1,0 +1,52 @@
+hostPath  nginx-app.yaml
+
+---
+kind: List
+apiVersion: v1
+items:
+- kind: ReplicationController
+  apiVersion: v1
+  metadata:
+    name: rc-nginx-meta
+    labels:
+      name: rc-nginx
+  spec:
+    replicas: 3
+    selector:
+      name: pod-nginx
+    template:
+      metadata:
+        labels:
+          name: pod-nginx
+      spec:
+        containers:
+        - name: nginx-docker-images
+          image: 192.168.5.69:5002/xdgc/nginx:1.11
+          ports:
+          - containerPort: 80
+            protocol: TCP
+          env:
+          - name: NGINX_PORT
+            value: "888"
+          volumeMounts:
+            - mountPath: /test-pd
+              name: test-volume
+        volumes:
+          - name: test-volume
+            hostPath:
+              path: /tmp
+- kind: Service
+  apiVersion: v1
+  metadata:
+    name: svc-nginx-meta
+    labels:
+      name: svc-nginx
+  spec:
+    type: NodePort
+    ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+      nodePort: 32000
+    selector:
+      name: pod-nginx

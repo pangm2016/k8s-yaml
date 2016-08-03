@@ -1,0 +1,21 @@
+Pods 一组
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: mysql-ssh
+  labels:
+    app: database
+spec:
+  containers:
+    - name: mysql
+      image: 192.168.5.69:5002/xdgc/mysql:5.5
+      env:
+      - name: MYSQL_ROOT_PASSWORD
+        value: password
+      ports:
+        - containerPort: 3306
+    - name: ssh
+      image: 192.168.5.69:5002/xdgc/ssh:latest
+      ports:
+        - containerPort: 22

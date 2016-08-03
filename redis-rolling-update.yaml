@@ -1,0 +1,49 @@
+redis rolling update
+
+redis-rc.yaml:
+
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: redis-master
+  labels:
+    name: redis-master
+spec:
+  replicas: 2
+  selector:
+    name: redis-master
+  template:
+    metadata:
+      labels:
+        name: redis-master
+    spec:
+      containers:
+      - name: master
+        image: 192.168.5.69:5002/xdgc/redis:latest
+        ports:
+        - containerPort: 6379
+        resources:
+          limits:
+            cpu: 100m
+            memory: 200Mi
+
+redis-svc.yaml:
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: svc-redis
+  labels:
+    name: redis-stan
+spec:
+  type: NodePort
+  ports:
+  - protocol: TCP
+    port: 6379
+    targetPort: 6379
+    nodePort: 30079
+  selector:
+    name: redis-master
+
+rolling update:
+kubectl rolling-update redis-master --image=192.168.5.69:5002/xdgc/redis:3.2

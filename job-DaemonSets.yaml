@@ -1,0 +1,39 @@
+job DaemonSets
+
+
+job:
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: busybox
+spec:
+  template:
+    metadata:
+      name: busybox
+    spec:
+      containers:
+      - name: busybox
+        image: busybox:1.24.1
+        command:
+          - sleep
+          - "30"
+      restartPolicy: Never
+
+Daemon Sets:
+
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: tomcat-ds
+spec:
+  template:
+    metadata:
+      labels:
+        app: tomcat
+    spec:
+      containers:
+      - name: tomcat
+        image: tomcat:8.0.30-jre8
+        ports:
+        - containerPort: 8080

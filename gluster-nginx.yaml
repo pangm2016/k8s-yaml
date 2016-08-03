@@ -1,0 +1,84 @@
+gluster nginx.yaml
+
+glusterfs-endpoints.json
+{
+  "kind": "Endpoints",
+  "apiVersion": "v1",
+  "metadata": {
+    "name": "glusterfs-cluster"
+  },
+  "subsets": [
+    {
+      "addresses": [
+        {
+          "ip": "192.168.4.44"
+        }
+      ],
+      "ports": [
+        {
+          "port": 1
+        }
+      ]
+    },
+    {
+      "addresses": [
+        {
+          "ip": "192.168.4.45"
+        }
+      ],
+      "ports": [
+        {
+          "port": 1
+        }
+      ]
+    }
+  ]
+}
+
+glusterfs-service.json
+{
+  "kind": "Service",
+  "apiVersion": "v1",
+  "metadata": {
+    "name": "glusterfs-cluster"
+  },
+  "spec": {
+    "ports": [
+      {"port": 1}
+    ]
+  }
+}
+
+glusterfs-pod.json
+{
+    "apiVersion": "v1",
+    "id": "glusterfs",
+    "kind": "Pod",
+    "metadata": {
+        "name": "glusterfs"
+    },
+    "spec": {
+        "containers": [
+            {
+                "name": "glusterfs",
+                "image": "192.168.5.69:5002/xdgc/nginx:1.11",
+                "volumeMounts": [
+                    {
+                        "mountPath": "/data/glusterfs",
+                        "name": "glusterfsvol"
+                    }
+                ]
+            }
+        ],
+        "volumes": [
+            {
+                "name": "glusterfsvol",
+                "glusterfs": {
+                    "endpoints": "glusterfs-cluster",
+                    "path": "gv0",
+                    "readOnly": false
+                }
+            }
+        ]
+    }
+}
