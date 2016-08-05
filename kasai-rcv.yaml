@@ -24,12 +24,17 @@ spec:
             cpu: 1800m
             memory: 2000Mi
         volumeMounts:
-            - mountPath: /opt/logs
-              name: test-kasai-volume
+            - name: test-kasai-config
+              mountPath: /opt/config
+            - name: test-kasai-log
+              mountPath: /opt/log
       volumes:
-          - name: test-kasai-volume
+          - name: test-kasai-config
             hostPath:
-              path: /data/logs/kasai   
+              path: /data/logs/config
+          - name: test-kasai-log
+            hostPath:
+              path: /data/los/logs
 
 ----------------------
 apiVersion: v1
